@@ -6,7 +6,7 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:14 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/12 21:36:17 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/16 09:09:34 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,70 +14,90 @@
 
 int get_next_line(int fd, char **line)
 {
+	printf("FUNCTION CALLED\n");
 	static unsigned int BUFFER_SIZE;
-
 	BUFFER_SIZE = 32;
 	size_t i;
-	
-	char *p;
 	size_t btsread;
-	//size_t offset;
-	//char linebuf[BUFFER_SIZE];
-	//char c;
-	int row;
-	int chr;
+	char *p;
 	char *ptr;
-
-	//if filedescriptor points to error
+	char *temp;
+	static size_t offset;
+	
 	if (fd < 0 || !line)
 		return (-1);
-
 	if (!(p = (char*)malloc(BUFFER_SIZE)))
 		return (-1);
 
-	printf("fd received = %d\n", fd);
-	//count how many bytes were read
-	btsread = read(fd, p, BUFFER_SIZE);
-	printf("bytes read  = %zu\n", btsread);
-	
-	row = 0;
-	//while there is no read error and we didn't reach end of line -> keep reading
-	printf("before while\n");
-	while (btsread > 0 && btsread <= BUFFER_SIZE)
+	//offset = 0;
+	int linend;
+	linend = 0;
+	int templen;
+	templen = 0;
+	int filend;
+	filend = 0;
+
+	ptr = NULL;
+	temp = NULL;
+	free(ptr);
+	free(temp);
+	while (linend != 1 && filend != 1)
 	{
-		chr = 0;
+		printf("in while\n");
+		if ((btsread = pread(fd, p, BUFFER_SIZE, offset)) == 0)
+		{
+			filend = 1;
+			break;
+		}
+		
+			//return (0) ;
 		i = 0;
-		while (i < BUFFER_SIZE)
+		while (i < btsread)
 		{
-			if (p[i] == (char)'\n')
+			i++;
+			if (p[i] == EOF ){
+				printf("EOF REACHED\n");
+				filend = 1;
 				break ;
-			i++;
+			}
+				
+			if (p[i] == '\n' )
+			{
+				linend = 1;
+				break;
+			}
 		}
-		printf("after while, i = %zu\n", i);
-		if (!(ptr = (char *)malloc(i + 1)))
-			return (-1);
-
-		ft_bzero(ptr, i + 1);
-		ft_strlcpy(ptr, p, i + 1);
-
-		printf("after malloc, i = %zu\n", i);
-		
-			printf("ptr string %s\n", ptr);
-		break;
-		/* c = p[i];
-		printf("char %d = %c\n", i, c);
-		
-		while (i < btsread && (c != EOF && c != '\n'))
+		if (btsread < BUFFER_SIZE)
 		{
-			line[row][chr] = c;
-			chr++;
-			i++;
+			linend = 1;
 		}
-		} */
+		printf("bites read = %zu, i = %zu, templen = %d, linend = %d, filend = %d\n", btsread, i, templen, linend, filend);
+		offset += ((linend == 1 || filend == 1) ? i + 1 : i);
+		printf("offset = %zu\n", offset);
+		
+		temp = ptr;
+		if (!(ptr = (char *)malloc(templen + i + ((linend == 1 || filend == 1)? 1 : 0))))
+			return (-1);
+		printf("content of temp%s\n", temp);
+		strncpy(ptr, temp, templen);
+		free(temp);
+		strncpy(ptr + templen, p, i);
+		ft_bzero(p, BUFFER_SIZE);
+		//free(p);
+		templen += i;
+		printf("before zero termination, templen = %d\n", templen);
+		if (linend == 1 || filend == 1)
+			ptr[templen] = '\0';
+
+		
 	}
-	printf("after while\n");
-	if (btsread == 0)
+	//освободить!
+	free(p);
+	*line = ptr;
+	printf("BEFORE EXIT:\n%s\n\n", ptr);
+	free(ptr);
+	if (filend == 1)
 		return (0);
-	return (99);
+	return(1);
 }
 

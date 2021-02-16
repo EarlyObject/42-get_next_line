@@ -6,7 +6,7 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:49 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/12 21:30:31 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/15 10:50:16 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <string.h>
 
 int get_next_line(int fd, char **line);
 void ft_bzero(void *s, size_t n);
