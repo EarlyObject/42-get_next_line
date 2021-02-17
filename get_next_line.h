@@ -6,7 +6,7 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:49 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/15 10:50:16 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/16 16:39:50 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,7 @@ void ft_bzero(void *s, size_t n);
 size_t ft_strlen(const char *s);
 size_t ft_strlcpy(char *restrict dst, const char *restrict src, size_t dstsize);
 void *ft_memset(void *b, int c, size_t len);
+char *ft_strjoin(char const *s1, char const *s2);
+size_t ft_strlcat(char *dst, const char *src, size_t dstsize);
 
 #endif

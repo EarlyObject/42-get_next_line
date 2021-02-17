@@ -6,7 +6,7 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:14 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/16 09:09:34 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/17 15:45:56 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,86 +18,60 @@ int get_next_line(int fd, char **line)
 	static unsigned int BUFFER_SIZE;
 	BUFFER_SIZE = 32;
 	size_t i;
-	size_t btsread;
-	char *p;
+	static size_t btsread;
+	char *buf;
+	static char *tail;
 	char *ptr;
 	char *temp;
 	static size_t offset;
 	
 	if (fd < 0 || !line)
 		return (-1);
-	if (!(p = (char*)malloc(BUFFER_SIZE)))
+	if (!(buf = (char*)malloc(BUFFER_SIZE)))
 		return (-1);
-
-	//offset = 0;
-	int linend;
-	linend = 0;
-	int templen;
-	templen = 0;
-	int filend;
-	filend = 0;
 
 	ptr = NULL;
 	temp = NULL;
-	free(ptr);
-	free(temp);
-	while (linend != 1 && filend != 1)
+	//free(ptr);
+	//free(temp);
+
+	while (offset || (btsread = read(fd, buf, BUFFER_SIZE)) > 0)
 	{
-		printf("in while\n");
-		if ((btsread = pread(fd, p, BUFFER_SIZE, offset)) == 0)
+		if (offset)
 		{
-			filend = 1;
-			break;
+			buf = tail;
 		}
-		
-			//return (0) ;
+		if (!(temp = (char *)malloc(btsread)))
+			return (-1);
 		i = 0;
 		while (i < btsread)
 		{
-			i++;
-			if (p[i] == EOF ){
-				printf("EOF REACHED\n");
-				filend = 1;
-				break ;
-			}
-				
-			if (p[i] == '\n' )
-			{
-				linend = 1;
+			if (buf[i] == '\n' || buf[i] == EOF)
 				break;
-			}
+			*(temp + i) = *(buf + i);
+			i++;	
 		}
-		if (btsread < BUFFER_SIZE)
+		temp[i] = '\0';
+		//stick ptr and temp
+		ptr = ptr ? ft_strjoin(ptr, temp) : temp;
+		*line = ptr;
+		if (i < btsread)
 		{
-			linend = 1;
+			//создаем с размером учитывая что не нужна ячейка для символа переноса строки
+			if (!(tail = (char *)malloc(btsread - i)))
+				return (-1);
+			//добавляем 1, так как надо проскочить перенос строки
+			ft_strlcpy(tail, buf + i + 1, btsread - i);
+			offset = i;
+			btsread = btsread - i;
+			i = 0;
+			return (1);
+		} else
+		{
+			offset = 0;
+			i = 0;
+			btsread = 0;
 		}
-		printf("bites read = %zu, i = %zu, templen = %d, linend = %d, filend = %d\n", btsread, i, templen, linend, filend);
-		offset += ((linend == 1 || filend == 1) ? i + 1 : i);
-		printf("offset = %zu\n", offset);
-		
-		temp = ptr;
-		if (!(ptr = (char *)malloc(templen + i + ((linend == 1 || filend == 1)? 1 : 0))))
-			return (-1);
-		printf("content of temp%s\n", temp);
-		strncpy(ptr, temp, templen);
-		free(temp);
-		strncpy(ptr + templen, p, i);
-		ft_bzero(p, BUFFER_SIZE);
-		//free(p);
-		templen += i;
-		printf("before zero termination, templen = %d\n", templen);
-		if (linend == 1 || filend == 1)
-			ptr[templen] = '\0';
-
-		
 	}
-	//освободить!
-	free(p);
-	*line = ptr;
-	printf("BEFORE EXIT:\n%s\n\n", ptr);
-	free(ptr);
-	if (filend == 1)
-		return (0);
-	return(1);
+	return (btsread == 0 ? 0 : -1);
 }
-
