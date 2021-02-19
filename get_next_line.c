@@ -6,11 +6,13 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:14 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/17 19:01:43 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/19 11:06:40 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+size_t fill_temp(char **temp, char **buf, size_t btsread);
 
 int get_next_line(int fd, char **line)
 {
@@ -19,18 +21,18 @@ int get_next_line(int fd, char **line)
 	static char *tail;
 	size_t i;
 	char *buf;
-	char *ptr;
+	static char *ptr;
 	char *temp;
 
-	printf("BUFFER SIZE IS %d\n", BUFFER_SIZE);
 	if (fd < 0 || !line || !(buf = (char *)malloc(BUFFER_SIZE)))
 		return (-1);
-	ptr = NULL;
 	while (flag || (btsread = read(fd, buf, BUFFER_SIZE)) > 0)
 	{
 		if (flag)
 			buf = tail;
-		if (!(temp = (char *)malloc(btsread)))
+
+		//i = fill_temp(&temp, &buf, btsread);
+		if (!(temp = (char *)malloc(btsread + 1)))
 			return (-1);
 		i = 0;
 		while (i < btsread)
@@ -48,9 +50,9 @@ int get_next_line(int fd, char **line)
 			if (!(tail = (char *)malloc(btsread - i)))
 				return (-1);
 			ft_strlcpy(tail, buf + i + 1, btsread - i);
-			free(buf);
 			flag = 1;
 			btsread = (i == 0) ? btsread - 1 : btsread - i;
+			ptr = NULL;
 			return (1);
 		} else
 		{
@@ -58,8 +60,5 @@ int get_next_line(int fd, char **line)
 			btsread = 0;
 		}
 	}
-	//free(buf);*
-	//free(tail);
-	printf("HERE\n");
 	return (btsread == 0 ? 0 : -1);
 }
