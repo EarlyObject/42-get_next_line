@@ -6,7 +6,7 @@
 #    By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/26 13:13:58 by asydykna          #+#    #+#              #
-#    Updated: 2021/02/19 10:56:08 by asydykna         ###   ########.fr        #
+#    Updated: 2021/02/21 18:23:34 by asydykna         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,8 +26,8 @@ BUF = -D BUFFER_SIZE=3
 all: program
 
 program:
-	$(CC) $(CFLAGS) $(BUF) $(SRC) -o main
+	$(CC) $(CFLAGS) $(BUF) $(SRC) leacks_cheker_ex.c -o main
 
 debug:
-	$(CC) -g $(CFLAGS) $(BUF) $(SRC) -o main
+	$(CC) -g $(CFLAGS) $(BUF) $(SRC) leacks_cheker_ex.c -o main
 
