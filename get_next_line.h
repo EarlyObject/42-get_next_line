@@ -6,7 +6,7 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:49 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/21 18:28:50 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/23 19:16:43 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,8 @@ void ft_bzero(void *s, size_t n);
 size_t ft_strlen(const char *s);
 size_t ft_strlcpy(char *restrict dst, const char *restrict src, size_t dstsize);
 void *ft_memset(void *b, int c, size_t len);
-char *ft_strjoin(char const *s1, char const *s2);
+char *ft_strjoin_sv(char **s1, char **s2);
 size_t ft_strlcat(char *dst, const char *src, size_t dstsize);
 void check_leaks();
-//size_t get_temp(size_t btsread, size_t i, char *buf, char **temp);
 
 #endif
