@@ -6,7 +6,7 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:33 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/23 18:23:02 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/24 15:00:03 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ char
 	char	*p;
 	p = NULL;
 
+	p = NULL;
 	if (!*s1)
 		return (NULL);
 	len1 = ft_strlen(*s1);
@@ -45,11 +46,14 @@ char
 		return (NULL);
 	ft_strlcpy(p, *s1, total);
 	ft_strlcat(p, *s2, total);
+	
 	if (*s2)
+	//free_mem(1, *s2);
 	free(*s2);
 	*s2 = NULL;
-	free(*s1);
-	*s1 = NULL;
+	free_mem(1, *s1);
+/* 	free(*s1);
+	*s1 = NULL; */
 	return (p);
 }
 
