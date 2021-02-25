@@ -6,108 +6,72 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:14 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/24 16:42:52 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/25 15:20:26 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t fill_tail(size_t i, size_t *btsread, char **buf, char **ptr)
-{
-	char *tail;
-
-	tail = NULL;
-	if (i < *btsread)
-	{
-		if (!(tail = (char *)malloc((*btsread) - i)))
-			return (-1);
-		ft_strlcpy(tail, (*buf) + i + 1, (*btsread) - i);
-		free_mem(1, *buf);
-		*buf = tail;
-		*btsread = (i == 0) ? (*btsread) - 1 : (*btsread) - i;
-		free_mem(1, *ptr);
-		return (1);
-	} else
-	{
-		buf[0][0] = 0;
-		*btsread = 0;
-	}
-	return (2);
-}
-
-size_t fill_temp(char **oldtemp, char **buf, size_t btsread)
-{
-	size_t i;
-	char *temp;
-
-	temp = NULL;
-	if (!(temp = (char *)malloc(btsread + 1)))
-		return (-1);
-	i = 0;
-	while (i < btsread)
-	{
-		if ((*buf)[i] == '\n' || (*buf)[i] == EOF)
-			break;
-		temp[i] = *(*buf + i);
-		i++;
-	}
-	temp[i] = '\0';
-	free_mem(1, *oldtemp);
-	*oldtemp = temp;
-	return (i);
-}
-
 int get_next_line(int fd, char **line)
 {
-	static size_t btsread;
-	size_t i;
-	static char *buf;
-	static char *ptr;
-	char *temp;
-	
+	char buf[BUFFER_SIZE + 1];
+	char *ptr;
+	static char *temp;
+	size_t n;
+	char *nlp;
+	char *ttemp;
+
+	n = 0;
 	if (fd < 0 || !line || BUFFER_SIZE <= 0)
 		return (-1);
-	if (!buf)
-		if (!(buf = (char *)malloc(BUFFER_SIZE)))
-			return (-1);
-	temp = NULL;
 	ptr = NULL;
-	while (btsread > 0 || (btsread = read(fd, buf, BUFFER_SIZE)) > 0)
+	while (temp || (n = read(fd, buf, BUFFER_SIZE)) > 0)
 	{
-		if ((i = fill_temp(&temp, &buf, btsread)) < 0)
-			return (i);
-		if (ptr)
-			ptr = ft_strjoin_sv(&ptr, &temp);
-		else{
-			char *sub;
-			char *ttemp;
-			ttemp = NULL;
-			sub = NULL;
-			if (!(sub = (char *)malloc(ft_strlen(temp) + 1)))
-				return (-1);
-			ft_strlcpy(sub, temp, ft_strlen(temp) + 1);
-			ttemp = ptr;
-			ptr = sub;
-			free_mem(1, ttemp);
-		}
-		*line = ptr;
-		int f = fill_tail(i, &btsread, &buf, &ptr);
-		if (f == -1)
-			return -1;
-		else if (f == 1)
+		buf[n] = '\0';
+		if (!temp)
+			temp = ft_strdup(buf);
+		if ((nlp = ft_strchr(temp, '\n')))
 		{
-			free_mem(1, temp);
-			return 1;
+			ptr = ptr ? ft_strjoin(ptr, makest(temp, nlp - temp))
+				: ft_strdup(makest(temp, nlp - temp));
+			ttemp = temp;
+			temp = makest(nlp + 1, ft_strlen(temp) - (nlp - temp) - 1);
+			free(ttemp);
+			ttemp = NULL;
+			break;
+		}
+		else
+		{
+			ptr = ptr? ft_strjoin(ptr, temp) : makest(temp, ft_strlen(temp));
+			free_mem(1, (void **)&temp);
 		}
 	}
-	free_mem(3, ptr, temp, buf);
-	return (btsread == 0 ? 0 : -1);
+	if (n < 0)
+		return (-1);
+	*line = ptr;
+	return (temp ? 1 : 0);
 }
 
+char *makest(char *buf, size_t len)
+{
+	char *str;
+	size_t i;
+	
+	if (!(str = (char *)malloc(len + 1)))
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		*(str+i) = *(buf + i);
+		i++;
+	}
+	str[i] = '\0';
+	return (str);
+}
 void free_mem(int argc, ...)
 {
 	va_list valist;
-	char *p;
+	void **p;
 	int i;
 
 	i = 0;
@@ -115,11 +79,11 @@ void free_mem(int argc, ...)
 	while(i < argc)
 	{
 		i++;
-		p = va_arg(valist, char *);
-		//if (p != NULL)
-		if (p)
+		p = va_arg(valist, void **);
+		if (*p)
 		{
-			free(p);
+			ft_memset(*p, 0, ft_strlen(*p));
+			free(*p);
 			p = NULL;
 		}
 	}
