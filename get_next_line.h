@@ -6,7 +6,7 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:49 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/25 15:09:00 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/25 16:12:35 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ size_t ft_strlcat(char *dst, const char *src, size_t dstsize);
 void check_leaks();
 void free_mem(int argc, ...);
 char *ft_strchr(const char *s, int c);
-char *makest(char *buf, size_t len);
+char *makestr(char *buf, size_t len);
 char *ft_strjoin(char const *s1, char const *s2);
 char *ft_strdup(const char *s1);
 void *ft_memset(void *b, int c, size_t len);
