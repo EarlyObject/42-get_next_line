@@ -6,7 +6,7 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:14 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/25 15:20:26 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/25 16:51:32 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,20 +29,23 @@ int get_next_line(int fd, char **line)
 	{
 		buf[n] = '\0';
 		if (!temp)
+		{
 			temp = ft_strdup(buf);
+		}
+
 		if ((nlp = ft_strchr(temp, '\n')))
 		{
-			ptr = ptr ? ft_strjoin(ptr, makest(temp, nlp - temp))
-				: ft_strdup(makest(temp, nlp - temp));
+			ptr = ptr ? ft_strjoin(ptr, makestr(temp, nlp - temp))
+				: ft_strdup(makestr(temp, nlp - temp));
 			ttemp = temp;
-			temp = makest(nlp + 1, ft_strlen(temp) - (nlp - temp) - 1);
+			temp = makestr(nlp + 1, ft_strlen(temp) - (nlp - temp) - 1);
 			free(ttemp);
 			ttemp = NULL;
 			break;
 		}
 		else
 		{
-			ptr = ptr? ft_strjoin(ptr, temp) : makest(temp, ft_strlen(temp));
+			ptr = ptr? ft_strjoin(ptr, temp) : makestr(temp, ft_strlen(temp));
 			free_mem(1, (void **)&temp);
 		}
 	}
@@ -52,7 +55,7 @@ int get_next_line(int fd, char **line)
 	return (temp ? 1 : 0);
 }
 
-char *makest(char *buf, size_t len)
+char *makestr(char *buf, size_t len)
 {
 	char *str;
 	size_t i;
@@ -84,7 +87,7 @@ void free_mem(int argc, ...)
 		{
 			ft_memset(*p, 0, ft_strlen(*p));
 			free(*p);
-			p = NULL;
+			*p = NULL;
 		}
 	}
 	va_end(valist);
