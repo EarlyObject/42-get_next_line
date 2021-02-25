@@ -6,7 +6,7 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:33 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/24 15:00:03 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/25 15:05:22 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,37 +24,6 @@ size_t
 		s++;
 	}
 	return (i);
-}
-
-char
-	*ft_strjoin_sv(char **s1, char **s2)
-{
-	size_t	len1;
-	size_t	len2;
-	size_t	total;
-	char	*p;
-	p = NULL;
-
-	p = NULL;
-	if (!*s1)
-		return (NULL);
-	len1 = ft_strlen(*s1);
-	len2 = ft_strlen(*s2);
-	total = len1 + len2 + 1;
-	p = (char *)malloc(total * sizeof(char));
-	if (!p)
-		return (NULL);
-	ft_strlcpy(p, *s1, total);
-	ft_strlcat(p, *s2, total);
-	
-	if (*s2)
-	//free_mem(1, *s2);
-	free(*s2);
-	*s2 = NULL;
-	free_mem(1, *s1);
-/* 	free(*s1);
-	*s1 = NULL; */
-	return (p);
 }
 
 size_t
@@ -101,4 +70,70 @@ size_t
 	}
 	*dst = '\0';
 	return (total);
+}
+
+char
+	*ft_strchr(const char *s, int c)
+{
+	if ((char)c == '\0')
+		return ((char *)s + ft_strlen(s));
+	while (*s)
+	{
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
+	}
+	return (NULL);
+}
+
+char
+	*ft_strjoin(char const *s1, char const *s2)
+{
+	size_t	len1;
+	size_t	len2;
+	size_t	total;
+	char	*p;
+
+	if (!s1)
+		return (NULL);
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	total = len1 + len2 + 1;
+	p = (char *)malloc(total * sizeof(char));
+	if (!p)
+		return (NULL);
+	ft_strlcpy(p, s1, total);
+	ft_strlcat(p, s2, total);
+	return (p);
+}
+
+char
+	*ft_strdup(const char *s1)
+{
+	size_t	len;
+	char	*p;
+
+	len = ft_strlen(s1) + 1;
+	p = (char *)malloc(len * sizeof(char));
+	if (!p)
+		return (NULL);
+	ft_strlcpy(p, s1, len);
+	return (p);
+}
+
+void
+	*ft_memset(void *b, int c, size_t len)
+{
+	unsigned char	*dest;
+
+	dest = b;
+	if (!b)
+		return (NULL);
+	while (len > 0)
+	{
+		*dest = (unsigned char)c;
+		dest++;
+		len--;
+	}
+	return (b);
 }
