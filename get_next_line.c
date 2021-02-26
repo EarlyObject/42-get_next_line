@@ -6,44 +6,43 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:14 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/25 19:47:26 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/26 12:34:24 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int
-	get_next_line(int fd, char **line)
+int	get_next_line(int fd, char **line)
 {
-	size_t		n;
+	int			n;
 	char		buf[BUFFER_SIZE + (n = 1)];
 	static char	*rdline = NULL;
 	char		*temp;
 
 	if (fd < 0 || !line || BUFFER_SIZE <= 0)
 		return (-1);
-	(rdline == NULL) ? rdline = mk_nstr(0) : NULL;
+	rdline == NULL ? rdline = make_str(0) : NULL;
 	while (!ft_strchr(rdline, '\n') && (n = read(fd, buf, BUFFER_SIZE)) > 0)
 	{
 		buf[n] = '\0';
 		temp = ft_strjoin(rdline, buf);
-		free_mem(1, (void **)&rdline);
+		free_mem((void **)&rdline);
 		rdline = temp;
 	}
 	if (n < 0)
 		return (-1);
 	*line = (n == 0) ? ft_strdup(rdline)
-		: ft_strdup(mkstr(temp, ft_strchr(temp, '\n') - temp));
-	if (n > 0)
-		temp = mkstr(ft_strchr(temp, '\n') + 1,
-	ft_strlen(temp) - (ft_strchr(temp, '\n') - temp) - 1);
-	free_mem(1, (void **)&rdline);
+	: ft_substr(rdline, 0, (ft_strchr(rdline, '\n') - rdline));
+	temp = ft_strdup(rdline + (ft_strlen(*line) + ((n > 0) ? +1 : +0)));
+	free_mem((void **)&rdline);
 	rdline = temp;
-	return (n ? 1 : 0);
+	if (n == 0)
+		free_mem((void **)&rdline);
+	return (n == 0) ? 0 : 1;
 }
 
 char
-	*mk_nstr(size_t size)
+	*make_str(size_t size)
 {
 	char *p;
 
@@ -53,43 +52,35 @@ char
 	return (p);
 }
 
-char
-	*mkstr(char *buf, size_t len)
+void
+	free_mem(void **p)
 {
-	char	*str;
-	size_t	i;
-
-	if (!(str = (char *)malloc(len + 1)))
-		return (NULL);
-	i = 0;
-	while (i < len)
+	if (*p)
 	{
-		*(str + i) = *(buf + i);
-		i++;
+		ft_memset(*p, 0, ft_strlen(*p));
+		free(*p);
+		*p = NULL;
 	}
-	str[i] = '\0';
-	return (str);
 }
 
-void
-	free_mem(int argc, ...)
+char
+	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	va_list	valist;
-	void	**p;
-	int		i;
+	size_t	i;
+	char	*ptr;
 
 	i = 0;
-	va_start(valist, argc);
-	while (i < argc)
+	if (!s || (long int)len < 0)
+		return (NULL);
+	ptr = (char *)malloc(len + 1);
+	if (ptr == NULL)
+		return (NULL);
+	while (start < ft_strlen(s) && i < len)
 	{
+		ptr[i] = s[start];
 		i++;
-		p = va_arg(valist, void **);
-		if (*p)
-		{
-			ft_memset(*p, 0, ft_strlen(*p));
-			free(*p);
-			*p = NULL;
-		}
+		start++;
 	}
-	va_end(valist);
+	ptr[i] = '\0';
+	return (ptr);
 }

@@ -6,7 +6,7 @@
 #    By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/26 13:13:58 by asydykna          #+#    #+#              #
-#    Updated: 2021/02/21 18:23:34 by asydykna         ###   ########.fr        #
+#    Updated: 2021/02/26 12:38:26 by asydykna         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ RM = rm -f
 
 CFLAGS = -Wall -Wextra -Werror
 
-BUF = -D BUFFER_SIZE=3
+BUF = -D BUFFER_SIZE=20
 
 all: program
 

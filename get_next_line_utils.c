@@ -6,7 +6,7 @@
 /*   By: asydykna <asydykna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 08:40:33 by asydykna          #+#    #+#             */
-/*   Updated: 2021/02/25 19:57:05 by asydykna         ###   ########.fr       */
+/*   Updated: 2021/02/26 12:10:09 by asydykna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ char
 	return (NULL);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char
+	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*ptr;
 	int		i;
